@@ -7,6 +7,7 @@ var UserSchema = new mongoose.Schema({
     email: {type: String, unique: true},
     hash: String,
     salt: String,
+    businessOwner: Boolean,
     businesses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Business'}]
 });
 
