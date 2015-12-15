@@ -1,0 +1,6 @@
+{
+  "name": "bookd-admin",
+  "version": "0.0.0",
+  "appPath": "app",
+  "moduleName": "bookdAdminApp"
+}
