@@ -7,11 +7,11 @@
  * # AdminCtrl
  * Controller of the bookdAdminApp
  */
-module.exports = function ($scope, businessFactory) {
-    businessFactory.getRequests()
-        .then(function () {
-            $scope.pendingRequests = businessFactory.requests;
-        });
+module.exports = function ($scope, businessFactory, socketService) {
+    //businessFactory.getRequests()
+    //    .then(function () {
+    //        $scope.pendingRequests = businessFactory.requests;
+    //    });
 
     $scope.updateRequest = function (request, pending, claimed) {
         request.pending = pending;
@@ -20,5 +20,15 @@ module.exports = function ($scope, businessFactory) {
             .then(function () {
                 businessFactory.getRequests();
             });
-    }
+    };
+
+    $scope.pendingRequests = [];
+    socketService.on('pending', function (pending) {
+        console.log(pending);
+        // Don't push the same business again in case of socket disconnect and reconnect.
+        // Use _id to uniquely identify a business.
+        if (!(_.find($scope.pendingRequests, '_id', pending._id))) {
+            $scope.pendingRequests.push(pending);
+        }
+    });
 };

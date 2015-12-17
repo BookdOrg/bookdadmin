@@ -1,6 +1,3 @@
-/**
- * Created by Jonfor on 12/14/15.
- */
 /*
  * Created by: Khalil Brown
  *

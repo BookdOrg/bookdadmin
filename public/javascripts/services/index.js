@@ -5,3 +5,4 @@ var app = require('angular').module('admin');
 
 app.factory('auth', require('./auth-factory'));
 app.factory('businessFactory', require('./business-factory'));
+app.factory('socketService', require('./socket-service'));

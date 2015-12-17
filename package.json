@@ -39,6 +39,7 @@
     "gulp-sourcemaps": "~1.6.0",
     "gulp-uglify": "~1.5.1",
     "gulp-util": "~3.0.7",
+    "mongo-express": "^0.28.0",
     "nodemon": "^1.8.1",
     "vinyl-buffer": "~1.0.0",
     "vinyl-source-stream": "~1.1.0"

@@ -38,6 +38,6 @@ app.all('/*', function (req, res, next) {
     res.sendFile('public/index.html', {root: __dirname});
 });
 
-console.log('Server started using settings: Port: ' + process.env.devlocalPort + "\nhost: "
+console.log('Server started using settings:\nPort: ' + 3003 + "\nhost: "
     + process.env.devhost + "\nenvironment: " + process.env.NODE_ENV);
 module.exports = app;
