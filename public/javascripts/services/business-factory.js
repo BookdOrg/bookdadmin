@@ -38,7 +38,7 @@ module.exports = function ($http, auth, $q) {
      *      request - the business object
      **/
     o.changeStatus = function (request) {
-        return $http.post('/business/update-request', request, {
+        return $http.post('/admin/business/update-request', request, {
             headers: {Authorization: 'Bearer ' + auth.getToken()}
         }).then(function (data) {
             angular.copy(data.data, o.requests);

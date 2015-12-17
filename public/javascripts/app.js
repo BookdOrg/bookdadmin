@@ -22,7 +22,19 @@ app.config([
             .state('admin', {
                 url: '/admin',
                 templateUrl: 'partials/admin.html',
-                controller: 'AdminCtrl'
+                controller: 'AdminCtrl',
+                resolve: {
+                    isAuthenticated: function ($state, $q, auth) {
+                        var redirect = false;
+                        if (!auth.isLoggedIn()) {
+                            redirect = true;
+                            return $q.reject({
+                                state: 'error'
+                            });
+                        }
+                        return redirect;
+                    }
+                }
             })
             .state('landing', {
                 url: '/',
@@ -30,6 +42,17 @@ app.config([
                 controller: 'LandingCtrl'
             });
         $urlRouterProvider.otherwise('/');
-    }]).run(function () {
+    }]).run(function ($rootScope, $state) {
+    $rootScope.$on('$stateChangeError', function (event, toState, toStateParams,
+                                                  fromState, fromStateParams, error) {
 
+        if (error) {
+            console.log(error);
+            $state.go('landing');
+            //var navViewModel = $rootScope.$new();
+            //$controller('NavCtrl', {$scope: navViewModel});
+            //navViewModel.open('md', 'landing');
+        }
+
+    });
 });

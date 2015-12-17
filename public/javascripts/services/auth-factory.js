@@ -2,7 +2,7 @@
  * Created by: Khalil Brown
  * AUTH Factory - Handles user authentication, login, registration, tokens.
  */
-module.exports = function ($http, $window, $rootScope, $state, $q) {
+module.exports = function ($http, $window, $rootScope, $state) {
     var auth = {
         saveToken: function (token) {
             $window.localStorage['cc-token'] = token;
@@ -30,7 +30,7 @@ module.exports = function ($http, $window, $rootScope, $state, $q) {
             }
         },
         logIn: function (user, info) {
-            return $http.post('/login', user)
+            return $http.post('/admin/login', user)
                 .then(function (data) {
                     auth.saveToken(data.data.token);
                     $rootScope.currentUser = auth.currentUser();

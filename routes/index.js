@@ -39,7 +39,7 @@ io.on('connection', function (socket) {
  *   Req.body.username == the email of the user, passport requires this be called username
  **/
 
-router.post('/login', function (req, res, next) {
+router.post('/admin/login', function (req, res, next) {
     if (!req.body.username || !req.body.password) {
         return res.status(400).json({message: 'Please fill out all fields.'});
     }
@@ -75,7 +75,7 @@ router.post('/login', function (req, res, next) {
  * Changes the status of a business to approved
  * id - The BOOKD id of a business.
  **/
-router.post('/business/update-request', auth, function (req, res, next) {
+router.post('/admin/business/update-request', auth, function (req, res, next) {
     Business.findOne({'_id': req.body.info._id}).exec(function (err, business) {
         business.pending = req.body.pending;
         business.claimed = true;

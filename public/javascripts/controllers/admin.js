@@ -24,7 +24,6 @@ module.exports = function ($scope, businessFactory, socketService) {
 
     $scope.pendingRequests = [];
     socketService.on('pending', function (pending) {
-        console.log(pending);
         // Don't push the same business again in case of socket disconnect and reconnect.
         // Use _id to uniquely identify a business.
         if (!(_.find($scope.pendingRequests, '_id', pending._id))) {
