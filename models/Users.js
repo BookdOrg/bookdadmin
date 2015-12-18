@@ -5,10 +5,22 @@ var jwt = require('jsonwebtoken');
 var UserSchema = new mongoose.Schema({
     name: String,
     email: {type: String, unique: true},
+    avatarVersion: String,
+    provider: String,
+    providerId: String,
+    rating: Number,
+    businessOwner: Boolean,
     hash: String,
     salt: String,
-    businessOwner: Boolean,
-    businesses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Business'}]
+    isAssociate: Boolean,
+    isAdmin: Boolean,
+    settings: Object,
+    notifications: [],
+    availability: Object,
+    associatePhotos: [],
+    businesses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Business'}],
+    personalAppointments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Appointment'}],
+    businessAppointments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Appointment'}]
 });
 
 UserSchema.methods.validPassword = function (password) {

@@ -21,17 +21,7 @@ var io = require('socket.io')(server);
 
 server.listen(3004);
 io.on('connection', function (socket) {
-    //Live updating of pending claim requests
-    var stream = Business.find({pending: true}).populate({
-        path: 'owner',
-        select: 'id name'
-    }).stream();
 
-    stream.on('data', function (business) {
-        socket.emit('pending', business);
-    }).on('error', function (err) {
-        console.log(err);
-    })
 });
 
 /**
@@ -59,26 +49,27 @@ router.post('/admin/login', function (req, res, next) {
 /**
  *   Returns all businesses that have requested to be claimed.
  **/
-//router.get('/business/pending-requests', auth, function (req, res, next) {
-//    Business.find({pending: true}).populate({
-//        path: 'owner',
-//        select: 'id name'
-//    }).exec(function (err, businesses) {
-//        if (err) {
-//            return next(err);
-//        }
-//        res.send(businesses);
-//    });
-//});
+router.get('/admin/business/pending-requests', auth, function (req, res, next) {
+    Business.find({pending: true}).populate({
+        path: 'owner',
+        select: 'id name'
+    }).exec(function (err, businesses) {
+        if (err) {
+            return next(err);
+        }
+        res.send(businesses);
+    });
+});
 
 /**
- * Changes the status of a business to approved
+ * Changes the status of a business to approved or denied
  * id - The BOOKD id of a business.
  **/
 router.post('/admin/business/update-request', auth, function (req, res, next) {
-    Business.findOne({'_id': req.body.info._id}).exec(function (err, business) {
+    console.log(req.body);
+    Business.findOne({'_id': req.body._id}).exec(function (err, business) {
         business.pending = req.body.pending;
-        business.claimed = true;
+        business.claimed = req.body.claimed;
         User.findOne(business.owner).exec(function (err, user) {
 
             if (err) {
@@ -88,7 +79,9 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             user.businessPage = business.placesId;
             user.businessOwner = true;
             user.save(function (err, user) {
-
+                if (err) {
+                    return next(err);
+                }
             });
             business.save(function (err, business) {
                 if (err) {

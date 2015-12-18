@@ -5,8 +5,8 @@ global._ = require('lodash');
 var angular = require('angular');
 require('angular-ui-router');
 require('bootstrap');
-var app = angular.module('admin', ['ui.router'
-
+var app = angular.module('admin', ['ui.router',
+    'ui.bootstrap'
 ]);
 
 require('./services');
