@@ -3,7 +3,6 @@
  */
 module.exports = function ($scope, $uibModalInstance, businessFactory) {
     var request = $uibModalInstance.request;
-    console.log(request);
     $scope.denyRequest = function () {
         request.pending = false;
         request.claimed = false;
