@@ -2,5 +2,8 @@
   "name": "bookd-admin",
   "version": "0.0.0",
   "appPath": "app",
-  "moduleName": "bookdAdminApp"
+  "moduleName": "bookdAdminApp",
+  "dependencies": {
+    "angular-bootstrap": "~0.14.3"
+  }
 }

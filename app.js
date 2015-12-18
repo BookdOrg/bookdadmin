@@ -22,7 +22,7 @@ var app = express();
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
 app.use(express.static(path.join(__dirname, 'node_modules')));
@@ -38,6 +38,6 @@ app.all('/*', function (req, res, next) {
     res.sendFile('public/index.html', {root: __dirname});
 });
 
-console.log('Server started using settings: Port: ' + process.env.devlocalPort + "\nhost: "
+console.log('Server started using settings:\nPort: ' + 3003 + "\nhost: "
     + process.env.devhost + "\nenvironment: " + process.env.NODE_ENV);
 module.exports = app;

@@ -8,15 +8,49 @@
         <div class="row">
             <div class="col-md-6">
                 Business Name: {{request.name}}
-                <br>Address: {{request.formatted_address}}
-                <br>Phone Number: {{request.formatted_phone_number}}
-                <br>Date Created: {{request.info.dateCreated}}
-                <br>Owner:{{request.info.owner.firstName}} {{request.info.owner.lastName}}
+                <br/>Address: {{request.formatted_address}}
+                <br/>Phone Number: {{request.formatted_phone_number}}
+                <br/>Date Created: {{request.info.dateCreated}}
+                <br/>Owner: {{request.owner.name}}
             </div>
             <div class="col-md-6">
-                <button class="btn btn-success" ng-click="updateRequest(request, false, true)">Approve</button>
-                <!--<button class="btn btn-danger" disabled ng-click="updateRequest(request,true,false)">Deny</button>-->
+                <button class="btn btn-success" ng-click="approveRequest(request)">Approve</button>
+                <button class="btn btn-danger" ng-click="setRequest(request); openDenialModal('lg')">Deny</button>
+            </div>
+        </div>
+        <hr/>
+    </div>
+</div>
+
+<script type="text/ng-template" id="denyRequestModal.html">
+    <div class="modal-header text-center">
+        <h3 class="modal-title">Deny request</h3>
+    </div>
+    <div class="container-fluid modal-body">
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="form-group">
+                    <label for="denial-reason-dropdown">Denial Reason</label>
+                    *
+                    <select id="denial-reason-dropdown" required>
+                        <option selected>None</option>
+                        <option>You smell bad</option>
+                        <option>#BlackWivesMatter</option>
+                        <option>test</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="denial-reason-text">Extra info (optional)</label>
+                    <textarea id="denial-reason-text" placeholder="You were denied because..."></textarea>
+                </div>
+
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-xs-12">
+                <button class="btn btn-danger" ng-click="denyRequest(request)">Deny</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
             </div>
         </div>
     </div>
-</div>
+</script>

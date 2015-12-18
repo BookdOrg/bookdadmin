@@ -1,6 +1,3 @@
-/**
- * Created by Jonfor on 12/14/15.
- */
 /*
  * Created by: Khalil Brown
  *
@@ -13,21 +10,10 @@ module.exports = function ($http, auth, $q) {
         requests: []
     };
     /**
-     * Update some things?
-     */
-    o.updateService = function (service) {
-        return $http.post('/business/update-service', service, {
-            headers: {Authorization: 'Bearer ' + auth.getToken()}
-        }).then(function (response) {
-            //angular.copy(data.data, o.business.info);
-            return response.data;
-        }, handleError)
-    };
-    /**
      * getRequests - Returns all businesses that have pending requests
      **/
     o.getRequests = function () {
-        return $http.get('/business/pending-requests', {
+        return $http.get('/admin/business/pending-requests', {
             headers: {Authorization: 'Bearer ' + auth.getToken()}
         }).then(function (data) {
             angular.copy(data.data, o.requests);
@@ -41,7 +27,7 @@ module.exports = function ($http, auth, $q) {
      *      request - the business object
      **/
     o.changeStatus = function (request) {
-        return $http.post('/business/update-request', request, {
+        return $http.post('/admin/business/update-request', request, {
             headers: {Authorization: 'Bearer ' + auth.getToken()}
         }).then(function (data) {
             angular.copy(data.data, o.requests);

@@ -33,7 +33,7 @@ gulp.task('browserify', function () {
         //    .pipe(uglify())
         //    .on('error', gutil.log)
         //.pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(paths.dist));
+        .pipe(gulp.dest(paths.dist)).on('error', errorHandler);
 });
 
 gulp.task('default', [], function () {
@@ -43,3 +43,9 @@ gulp.task('default', [], function () {
 gulp.task('watch', ['browserify'], function () {
     gulp.watch(['public/javascripts/**/*.js', '!public/javascripts/dist/*'], ['browserify']);
 });
+
+// Handle the error
+function errorHandler(error) {
+    console.log(error.toString());
+    this.emit('end');
+}

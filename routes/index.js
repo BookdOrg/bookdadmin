@@ -1,7 +1,3 @@
-/**
- * Created by Jonfor on 12/14/15.
- */
-//Created by Khalil -
 var express = require('express');
 var app = require('express')();
 var router = express.Router();
@@ -23,7 +19,7 @@ var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-server.listen(process.env.devsocketPort);
+server.listen(3004);
 io.on('connection', function (socket) {
 
 });
@@ -33,7 +29,7 @@ io.on('connection', function (socket) {
  *   Req.body.username == the email of the user, passport requires this be called username
  **/
 
-router.post('/login', function (req, res, next) {
+router.post('/admin/login', function (req, res, next) {
     if (!req.body.username || !req.body.password) {
         return res.status(400).json({message: 'Please fill out all fields.'});
     }
@@ -53,8 +49,7 @@ router.post('/login', function (req, res, next) {
 /**
  *   Returns all businesses that have requested to be claimed.
  **/
-router.get('/business/pending-requests', auth, function (req, res, next) {
-    var updatedBusinesses = [];
+router.get('/admin/business/pending-requests', auth, function (req, res, next) {
     Business.find({pending: true}).populate({
         path: 'owner',
         select: 'id name'
@@ -62,33 +57,19 @@ router.get('/business/pending-requests', auth, function (req, res, next) {
         if (err) {
             return next(err);
         }
-        async.each(businesses, function (currBusiness, businessCallback) {
-            googleplaces.placeDetailsRequest({placeid: currBusiness.placesId}, function (error, response) {
-                if (error) {
-                    return businessCallback(error);
-                }
-                response.result.info = currBusiness;
-                updatedBusinesses.push(response.result);
-                businessCallback();
-            });
-        }, function (err) {
-            if (err) {
-                return next(err);
-            }
-            res.json(updatedBusinesses);
-        });
+        res.send(businesses);
     });
 });
 
 /**
- * Changes the status of a business to approved
+ * Changes the status of a business to approved or denied
  * id - The BOOKD id of a business.
  **/
-
-router.post('/business/update-request', auth, function (req, res, next) {
-    Business.findOne({'_id': req.body.info._id}).exec(function (err, business) {
+router.post('/admin/business/update-request', auth, function (req, res, next) {
+    console.log(req.body);
+    Business.findOne({'_id': req.body._id}).exec(function (err, business) {
         business.pending = req.body.pending;
-        business.claimed = true;
+        business.claimed = req.body.claimed;
         User.findOne(business.owner).exec(function (err, user) {
 
             if (err) {
@@ -98,7 +79,9 @@ router.post('/business/update-request', auth, function (req, res, next) {
             user.businessPage = business.placesId;
             user.businessOwner = true;
             user.save(function (err, user) {
-
+                if (err) {
+                    return next(err);
+                }
             });
             business.save(function (err, business) {
                 if (err) {
