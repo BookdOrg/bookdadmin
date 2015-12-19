@@ -6,6 +6,7 @@ var browserify = require('browserify'),
     gulp = require('gulp'),
     gutil = require('gulp-util'),
     ngAnnotate = require('gulp-ng-annotate'),
+    plumber = require('gulp-plumber'),
     source = require('vinyl-source-stream'),
     sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify');
@@ -42,6 +43,15 @@ gulp.task('default', [], function () {
 
 gulp.task('watch', ['browserify'], function () {
     gulp.watch(['public/javascripts/**/*.js', '!public/javascripts/dist/*'], ['browserify']);
+});
+
+var Server = require('karma').Server;
+
+gulp.task('test', function (done) {
+    new Server({
+        configFile: __dirname + '/tests/karma.conf.js',
+        singleRun: true
+    }, done).start();
 });
 
 // Handle the error
