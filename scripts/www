@@ -2,7 +2,7 @@
 var debug = require('debug')('odd-job');
 var app = require('../app');
 
-app.set('port', 3003);
+app.set('port', process.env.demoPort);
 
 var server = require('socket.io').listen(app.listen(app.get('port'), process.env.devhost), function (message) {
     if (process.send) {
