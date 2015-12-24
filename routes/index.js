@@ -71,12 +71,24 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
         if (err) {
             return handleError(err);
         }
+
+
+        var subject,
+            body;
+        if (req.body.claimed === false) {
+            // Rejected
+            subject = 'We sorry ✔';
+            body = req.body.selectedReason + '<br/>' + '<b>' + req.body.denialReasonText + '</b>'
+        } else {
+            subject = '✔✔✔✔✔✔';
+            body = '!✔✔!✔✔!✔✔!'
+        }
         // setup e-mail data with unicode symbols
         var mailOptions = {
             from: 'Marshall Mathers ✔', // sender address
             to: user.email, // list of receivers
-            subject: 'We sorry ✔', // Subject line
-            html: req.body.selectedReason + '<br/>' + '<b>' + req.body.denialReasonText + '</b>' // html body
+            subject: subject, // Subject line
+            html: body // html body
         };
 
         // send mail with defined transport object
