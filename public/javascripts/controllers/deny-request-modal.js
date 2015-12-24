@@ -2,11 +2,12 @@
  * Created by Jonfor on 12/17/15.
  */
 module.exports = function ($scope, $uibModalInstance, businessFactory) {
-    var request = $uibModalInstance.request;
+    // This request object is passed from the admin controller.
+    $scope.request = $uibModalInstance.request;
     $scope.denyRequest = function () {
-        request.pending = false;
-        request.claimed = false;
-        businessFactory.changeStatus(request)
+        $scope.request.pending = false;
+        $scope.request.claimed = false;
+        businessFactory.changeStatus($scope.request)
             .then(function () {
                 businessFactory.getRequests();
             });
@@ -17,4 +18,10 @@ module.exports = function ($scope, $uibModalInstance, businessFactory) {
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+
+    $scope.reasons = [
+        'test',
+        '2',
+        'h'
+    ]
 };

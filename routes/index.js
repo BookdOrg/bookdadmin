@@ -5,23 +5,22 @@ var jwt = require('express-jwt');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var async = require('async');
-
 var GooglePlaces = require('googleplaces');
 var googleplaces = new GooglePlaces(process.env.GOOGLE_PLACES_API_KEY, process.env.GOOGLE_PLACES_OUTPUT_FORMAT);
 var User = mongoose.model('User');
 var Business = mongoose.model('Business');
-//var Appointment = mongoose.model('Appointment');
-//var Category = mongoose.model('Category');
-//var Service = mongoose.model('Service');
-
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
-
 var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+//var io = require('socket.io')(server);
+var nodemailer = require('nodemailer');
 
-server.listen(3004);
-io.on('connection', function (socket) {
-
+// create reusable transporter object using SMTP transport
+var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'contact.bookd@gmail.com',
+        pass: process.env.emailPass
+    }
 });
 
 /**
@@ -67,6 +66,26 @@ router.get('/admin/business/pending-requests', auth, function (req, res, next) {
  **/
 router.post('/admin/business/update-request', auth, function (req, res, next) {
     console.log(req.body);
+
+    User.findOne({'_id': req.body.owner._id}).exec(function (err, user) {
+        if (err) {
+            return handleError(err);
+        }
+        // setup e-mail data with unicode symbols
+        var mailOptions = {
+            from: 'Marshall Mathers ✔', // sender address
+            to: user.email, // list of receivers
+            subject: 'We sorry ✔', // Subject line
+            html: req.body.selectedReason + '<br/>' + '<b>' + req.body.denialReasonText + '</b>' // html body
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                return console.log(error);
+            }
+        });
+    });
     Business.findOne({'_id': req.body._id}).exec(function (err, business) {
         business.pending = req.body.pending;
         business.claimed = req.body.claimed;

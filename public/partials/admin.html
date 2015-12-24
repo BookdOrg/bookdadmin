@@ -32,16 +32,15 @@
                 <div class="form-group">
                     <label for="denial-reason-dropdown">Denial Reason</label>
                     *
-                    <select id="denial-reason-dropdown" required>
-                        <option selected>None</option>
-                        <option>You smell bad</option>
-                        <option>#BlackWivesMatter</option>
-                        <option>test</option>
+                    <select id="denial-reason-dropdown" ngRequired
+                            ng-options="reason for reason in reasons"
+                            ng-model="request.selectedReason">
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="denial-reason-text">Extra info (optional)</label>
-                    <textarea id="denial-reason-text" placeholder="You were denied because..."></textarea>
+                    <textarea id="denial-reason-text" placeholder="You were denied because..."
+                              ng-model="request.denialReasonText"></textarea>
                 </div>
 
             </div>

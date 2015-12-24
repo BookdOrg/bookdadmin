@@ -36,5 +36,5 @@ module.exports = function ($scope, businessFactory, $uibModal) {
     //Needed to pass the request data from the ng-repeat to the modal.
     $scope.setRequest = function (request) {
         $scope.request = request;
-    }
+    };
 };
