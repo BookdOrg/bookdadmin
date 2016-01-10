@@ -65,8 +65,6 @@ router.get('/admin/business/pending-requests', auth, function (req, res, next) {
  * id - The BOOKD id of a business.
  **/
 router.post('/admin/business/update-request', auth, function (req, res, next) {
-    console.log(req.body);
-
     User.findOne({'_id': req.body.owner._id}).exec(function (err, user) {
         if (err) {
             return handleError(err);
@@ -77,15 +75,19 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             body;
         if (req.body.claimed === false) {
             // Rejected
-            subject = 'We sorry ✔';
-            body = req.body.selectedReason + '<br/>' + '<b>' + req.body.denialReasonText + '</b>'
+            subject = 'Your Bookd business request status';
+            body = 'Unfortunately your request to claim ' + req.body.name +
+                'has been rejected. The reason for rejection was: ' + req.body.selectedReason
+                + '. More information:<br/>' + req.body.denialReasonText +
+                '<br/>Please get in contact with us at contact.bookd@gmail.com to resolve this.';
+            //body = req.body.selectedReason + '<br/>' + '<b>' + req.body.denialReasonText + '</b>'
         } else {
-            subject = '✔✔✔✔✔✔';
-            body = '!✔✔!✔✔!✔✔!'
+            subject = 'Your Bookd business request status';
+            body = 'Congratulations! your business, ' + req.body.name + ', is now a partner of Bookd!'
         }
         // setup e-mail data with unicode symbols
         var mailOptions = {
-            from: 'Marshall Mathers ✔', // sender address
+            from: 'Marshall Mathers', // sender address
             to: user.email, // list of receivers
             subject: subject, // Subject line
             html: body // html body
