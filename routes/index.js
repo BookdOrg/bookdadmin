@@ -70,7 +70,6 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             return handleError(err);
         }
 
-
         var subject,
             body;
         if (req.body.claimed === false) {
@@ -103,25 +102,28 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
     Business.findOne({'_id': req.body._id}).exec(function (err, business) {
         business.pending = req.body.pending;
         business.claimed = req.body.claimed;
-        User.findOne(business.owner).exec(function (err, user) {
-
+        console.log(business.pending);
+        console.log(business.claimed);
+        if (!business.pending && business.claimed) {
+            User.findOne(business.owner).exec(function (err, user) {
+                if (err) {
+                    return handleError(err);
+                }
+                user.businesses.push(business._id);
+                user.businessPage = business.placesId;
+                user.businessOwner = true;
+                user.save(function (err, user) {
+                    if (err) {
+                        return next(err);
+                    }
+                });
+            });
+        }
+        business.save(function (err, business) {
             if (err) {
-                return handleError(err);
+                return next(err);
             }
-            user.businesses.push(business._id);
-            user.businessPage = business.placesId;
-            user.businessOwner = true;
-            user.save(function (err, user) {
-                if (err) {
-                    return next(err);
-                }
-            });
-            business.save(function (err, business) {
-                if (err) {
-                    return next(err);
-                }
-                res.json({success: 'success'});
-            });
+            res.json({success: 'success'});
         });
     });
 });
