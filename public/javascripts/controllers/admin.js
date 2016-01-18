@@ -16,8 +16,10 @@ module.exports = function ($scope, businessFactory, $uibModal) {
     $scope.approveRequest = function (request) {
         request.pending = false;
         request.claimed = true;
+        $scope.loading = true;
         businessFactory.changeStatus(request)
             .then(function () {
+                $scope.loading = false;
                 businessFactory.getRequests();
             });
     };

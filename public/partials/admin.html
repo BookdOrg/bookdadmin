@@ -14,7 +14,8 @@
                 <br/>Owner: {{request.owner.name}}
             </div>
             <div class="col-md-6">
-                <button class="btn btn-success" ng-click="approveRequest(request)">Approve</button>
+                <button class="btn btn-success" ng-show="!loading" ng-click="approveRequest(request)">Approve</button>
+                <i class="fa fa-spinner fa-pulse" ng-show="loading"></i>
                 <button class="btn btn-danger" ng-click="setRequest(request); openDenialModal('lg')">Deny</button>
             </div>
         </div>

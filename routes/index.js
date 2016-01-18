@@ -132,6 +132,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                 country:'US',
                 managed:true
             },function(err,response){
+                business.stripeId = response.id;
                 business.stripeKeys = response.keys;
                 business.save(function(err,resBus){
                     if(err){
