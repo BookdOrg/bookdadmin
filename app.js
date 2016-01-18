@@ -7,6 +7,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var stripe = require('stripe')(process.env.stripeDevSecret);
 
 var adminDatabase = mongoose.createConnection('mongodb://localhost/admin');
 var bookdDatabase = mongoose.createConnection('mongodb://localhost/clientconnect');
@@ -93,7 +94,7 @@ passport.use(new localStrategy(
 
 
 
-var routes = require('./routes/index');
+//var routes = require('./routes/index');
 
 var app = express();
 
