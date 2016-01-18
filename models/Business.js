@@ -15,6 +15,7 @@ var BusinessSchema = new mongoose.Schema({
     dateCreated: String,
     pending: Boolean,
     claimed: Boolean,
-    tier: Number
+    tier: Number,
+    stripeKeys:Object
 });
 module.exports = BusinessSchema;
