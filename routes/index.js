@@ -114,6 +114,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
         business.pending = req.body.pending;
         business.claimed = req.body.claimed;
         business.stripeKeys = {};
+        business.payments = false;
         if (!business.pending && business.claimed) {
             BookdUser.findOne(business.owner).exec(function (err, user) {
                 if (err) {
@@ -130,7 +131,8 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             });
             stripe.accounts.create({
                 country:'US',
-                managed:true
+                managed:true,
+                business_name:business.name
             },function(err,response){
                 business.stripeId = response.id;
                 business.stripeKeys = response.keys;
@@ -138,7 +140,6 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                     if(err){
                         return next(err);
                     }
-                    console.log(resBus);
                     res.json({success: 'success'});
                 });
             });
