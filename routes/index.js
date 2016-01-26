@@ -24,7 +24,8 @@ var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 var server = require('http').createServer(app);
 //var io = require('socket.io')(server);
 var nodemailer = require('nodemailer');
-
+var EmailTemplate = require('email-templates').EmailTemplate;
+var path = require('path');
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -76,39 +77,54 @@ router.get('/admin/business/pending-requests', auth, function (req, res, next) {
  * id - The BOOKD id of a business.
  **/
 router.post('/admin/business/update-request', auth, function (req, res, next) {
+    var businesAcceptedDir = path.join(__dirname,'../templates','business-accepted');
+    var businessRejectedDir = path.join(__dirname,'../templates','business-rejected');
     BookdUser.findOne({'_id': req.body.owner._id}).exec(function (err, user) {
         if (err) {
             return handleError(err);
         }
-
-        var subject,
-            body;
+        var body,
+            mailOptions = {},
+            templateOptions = {};
+        templateOptions = req.body;
+        templateOptions.emailName = user.name.split(' ',1);
         if (req.body.claimed === false) {
             // Rejected
-            subject = 'Your Bookd business request status';
-            body = 'Unfortunately your request to claim ' + req.body.name +
-                'has been rejected. The reason for rejection was: ' + req.body.selectedReason
-                + '. More information:<br/>' + req.body.denialReasonText +
-                '<br/>Please get in contact with us at contact.bookd@gmail.com to resolve this.';
-            //body = req.body.selectedReason + '<br/>' + '<b>' + req.body.denialReasonText + '</b>'
+            var rejectionTemplate = new EmailTemplate(businessRejectedDir);
+            rejectionTemplate.render(templateOptions,function(err,results){
+                body = results.html;
+                mailOptions = {
+                    from: 'Bookd', // sender address
+                    to: user.email, // list of receivers
+                    subject: 'Bookd Request Status', // Subject line
+                    html: body // html body
+                };
+                // send mail with defined transport object
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        return console.log(error);
+                    }
+                });
+            })
         } else {
-            subject = 'Your Bookd business request status';
-            body = 'Congratulations! your business, ' + req.body.name + ', is now a partner of Bookd!'
+            var acceptedTemplate = new EmailTemplate(businesAcceptedDir);
+            acceptedTemplate.render(templateOptions,function(err,results){
+                body = results.html;
+                mailOptions = {
+                    from: 'Bookd', // sender address
+                    to: user.email, // list of receivers
+                    subject: 'Bookd Request Status', // Subject line
+                    html: body // html body
+                };
+                // send mail with defined transport object
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        return console.log(error);
+                    }
+                });
+            });
+            //body = 'Congratulations! your business, ' + req.body.name + ', is now a partner of Bookd!'
         }
-        // setup e-mail data with unicode symbols
-        var mailOptions = {
-            from: 'Marshall Mathers', // sender address
-            to: user.email, // list of receivers
-            subject: subject, // Subject line
-            html: body // html body
-        };
-
-        // send mail with defined transport object
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                return console.log(error);
-            }
-        });
     });
     Business.findOne({'_id': req.body._id}).exec(function (err, business) {
         business.pending = req.body.pending;
