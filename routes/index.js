@@ -27,10 +27,13 @@ var nodemailer = require('nodemailer');
 var EmailTemplate = require('email-templates').EmailTemplate;
 var path = require('path');
 // create reusable transporter object using SMTP transport
+var wellknown = require('nodemailer-wellknown');
+var config = wellknown('Zoho');
+// create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
-    service: 'Gmail',
+    service: 'Zoho',
     auth: {
-        user: 'contact.bookd@gmail.com',
+        user: 'contact@bookd.me',
         pass: process.env.emailPass
     }
 });
@@ -94,7 +97,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             rejectionTemplate.render(templateOptions,function(err,results){
                 body = results.html;
                 mailOptions = {
-                    from: 'Bookd', // sender address
+                    from: 'contact@bookd.me', // sender address
                     to: user.email, // list of receivers
                     subject: 'Bookd Request Status', // Subject line
                     html: body // html body
@@ -111,7 +114,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             acceptedTemplate.render(templateOptions,function(err,results){
                 body = results.html;
                 mailOptions = {
-                    from: 'Bookd', // sender address
+                    from: 'contact@bookd.me', // sender address
                     to: user.email, // list of receivers
                     subject: 'Bookd Request Status', // Subject line
                     html: body // html body
