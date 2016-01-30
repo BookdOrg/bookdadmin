@@ -14,9 +14,9 @@ var UserSchema = require('./../models/User');
 var BusinessSchema = require('./../models/Business');
 var BookdSchema = require('./../models/BookdUser');
 
-var User = adminDatabase.model('Administrators',UserSchema);
-var BookdUser = bookdDatabase.model('User',BookdSchema);
-var Business = bookdDatabase.model('Business',BusinessSchema);
+var User = adminDatabase.model('Administrators', UserSchema);
+var BookdUser = bookdDatabase.model('User', BookdSchema);
+var Business = bookdDatabase.model('Business', BusinessSchema);
 
 var stripe = require('stripe')(process.env.stripeDevSecret);
 
@@ -80,8 +80,8 @@ router.get('/admin/business/pending-requests', auth, function (req, res, next) {
  * id - The BOOKD id of a business.
  **/
 router.post('/admin/business/update-request', auth, function (req, res, next) {
-    var businesAcceptedDir = path.join(__dirname,'../templates','business-accepted');
-    var businessRejectedDir = path.join(__dirname,'../templates','business-rejected');
+    var businesAcceptedDir = path.join(__dirname, '../templates', 'business-accepted');
+    var businessRejectedDir = path.join(__dirname, '../templates', 'business-rejected');
     BookdUser.findOne({'_id': req.body.owner._id}).exec(function (err, user) {
         if (err) {
             return handleError(err);
@@ -90,11 +90,11 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             mailOptions = {},
             templateOptions = {};
         templateOptions = req.body;
-        templateOptions.emailName = user.name.split(' ',1);
+        templateOptions.emailName = user.name.split(' ', 1);
         if (req.body.claimed === false) {
             // Rejected
             var rejectionTemplate = new EmailTemplate(businessRejectedDir);
-            rejectionTemplate.render(templateOptions,function(err,results){
+            rejectionTemplate.render(templateOptions, function (err, results) {
                 body = results.html;
                 mailOptions = {
                     from: 'contact@bookd.me', // sender address
@@ -111,7 +111,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             })
         } else {
             var acceptedTemplate = new EmailTemplate(businesAcceptedDir);
-            acceptedTemplate.render(templateOptions,function(err,results){
+            acceptedTemplate.render(templateOptions, function (err, results) {
                 body = results.html;
                 mailOptions = {
                     from: 'contact@bookd.me', // sender address
@@ -149,20 +149,20 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                 });
             });
             stripe.accounts.create({
-                country:'US',
-                managed:true,
-                business_name:business.name
-            },function(err,response){
+                country: 'US',
+                managed: true,
+                business_name: business.name
+            }, function (err, response) {
                 business.stripeId = response.id;
                 business.stripeKeys = response.keys;
-                business.save(function(err,resBus){
-                    if(err){
+                business.save(function (err, resBus) {
+                    if (err) {
                         return next(err);
                     }
                     res.json({success: 'success'});
                 });
             });
-        }else{
+        } else {
             business.save(function (err, business) {
                 if (err) {
                     return next(err);
