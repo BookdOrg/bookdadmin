@@ -97,7 +97,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             rejectionTemplate.render(templateOptions, function (err, results) {
                 body = results.html;
                 mailOptions = {
-                    from: 'contact@bookd.me', // sender address
+                    from: 'Bookd <contact@bookd.me>', // sender address
                     to: user.email, // list of receivers
                     subject: 'Bookd Request Status', // Subject line
                     html: body // html body
@@ -114,7 +114,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             acceptedTemplate.render(templateOptions, function (err, results) {
                 body = results.html;
                 mailOptions = {
-                    from: 'contact@bookd.me', // sender address
+                    from: 'Bookd <contact@bookd.me>', // sender address
                     to: user.email, // list of receivers
                     subject: 'Bookd Request Status', // Subject line
                     html: body // html body
