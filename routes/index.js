@@ -18,6 +18,8 @@ var User = adminDatabase.model('Administrators', UserSchema);
 var BookdUser = bookdDatabase.model('User', BookdSchema);
 var Business = bookdDatabase.model('Business', BusinessSchema);
 
+var request = require('request');
+
 var stripe = require('stripe')(process.env.stripeDevSecret);
 
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
@@ -126,7 +128,6 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                     }
                 });
             });
-            //body = 'Congratulations! your business, ' + req.body.name + ', is now a partner of Bookd!'
         }
     });
     Business.findOne({'_id': req.body._id}).exec(function (err, business) {
@@ -146,6 +147,8 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                     if (err) {
                         return next(err);
                     }
+                    var id = user._id;
+                    request.post({url:'http://'+process.env.devhost +':3002/user/claimed-success?user='+id},function(err,response){});
                 });
             });
             stripe.accounts.create({
