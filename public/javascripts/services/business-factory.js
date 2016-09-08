@@ -7,7 +7,15 @@
  */
 module.exports = function ($http, auth, $q) {
     var o = {
-        requests: []
+        requests: [],
+        users: []
+    };
+    o.getAllUsers = function(){
+        return $http.get('/admin/users', {
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
+        }).then(function (data) {
+            angular.copy(data.data, o.users);
+        }, handleError);
     };
     /**
      * getRequests - Returns all businesses that have pending requests

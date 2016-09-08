@@ -2,25 +2,46 @@
     <div class="page-header">
         <h1 class='text-center'>Admin Panel</h1>
     </div>
-    <h3>Pending Queue</h3>
+    <div class="row">
+        <div class="col-xs-6">
+            <h3>Pending Queue</h3>
 
-    <div ng-repeat="request in pendingRequests">
-        <div class="row">
-            <div class="col-md-6">
-                Business Name: {{request.name}}
-                <br/>Address: {{request.address}}
-                <br/>Phone Number: {{request.phoneNumber}}
-                <br/>Date Created: {{request.dateCreated}}
-                <br/>Owner: {{request.owner.name}}
-            </div>
-            <div class="col-md-6">
-                <button class="btn btn-success" ng-show="!loading" ng-click="approveRequest(request)">Approve</button>
-                <i class="fa fa-spinner fa-pulse" ng-show="loading"></i>
-                <button class="btn btn-danger" ng-click="setRequest(request); openDenialModal('lg')">Deny</button>
+            <div ng-repeat="request in pendingRequests">
+                <div class="row">
+                    <div class="col-md-6">
+                        Business Name: {{request.name}}
+                        <br/>Address: {{request.address}}
+                        <br/>Phone Number: {{request.phoneNumber}}
+                        <br/>Date Created: {{request.dateCreated}}
+                        <br/>Owner: {{request.owner.name}}
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-success" ng-show="!loading" ng-click="approveRequest(request)">Approve</button>
+                        <i class="fa fa-spinner fa-pulse" ng-show="loading"></i>
+                        <button class="btn btn-danger" ng-click="setRequest(request); openDenialModal('lg')">Deny</button>
+                    </div>
+                </div>
+                <hr/>
             </div>
         </div>
-        <hr/>
+        <div class="col-xs-6">
+            <div class="row">
+                <div class="col-xs-4">
+                    <h3>Beta Signups</h3>
+                    <div ng-repeat="user in users.betaUsers">
+                        {{user.email}}
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <h3>Current Users</h3>
+                    <div ng-repeat="user in users.users">
+                        {{user.name}} - {{user.email}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>
 
 <script type="text/ng-template" id="denyRequestModal.html">

@@ -13,6 +13,11 @@ module.exports = function ($scope, businessFactory, $uibModal) {
             $scope.pendingRequests = businessFactory.requests;
         });
 
+    businessFactory.getAllUsers()
+        .then(function(){
+           $scope.users = businessFactory.users;
+        });
+
     $scope.approveRequest = function (request) {
         request.pending = false;
         request.claimed = true;

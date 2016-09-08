@@ -13,10 +13,12 @@ var bookdDatabase = require('./connectionTwo');
 var UserSchema = require('./models/User');
 var BookdSchema = require('./models/BookdUser');
 var BusinessSchema = require('./models/Business');
+var BetaUserSchema = require('./models/BetaUser');
 
 adminDatabase.model('Administrators',UserSchema);
 bookdDatabase.model('User',BookdSchema);
 bookdDatabase.model('Business',BusinessSchema);
+bookdDatabase.model('betausers',BetaUserSchema);
 
 require('./config/passport');
 

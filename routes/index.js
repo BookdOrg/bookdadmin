@@ -13,10 +13,12 @@ var bookdDatabase = require('./../connectionTwo');
 var UserSchema = require('./../models/User');
 var BusinessSchema = require('./../models/Business');
 var BookdSchema = require('./../models/BookdUser');
+var BetaUserSchema = require('./../models/BetaUser');
 
 var User = adminDatabase.model('Administrators', UserSchema);
 var BookdUser = bookdDatabase.model('User', BookdSchema);
 var Business = bookdDatabase.model('Business', BusinessSchema);
+var BetaUser = bookdDatabase.model('betausers', BetaUserSchema);
 
 var request = require('request');
 
@@ -38,6 +40,33 @@ var transporter = nodemailer.createTransport({
         user: 'contact@bookd.me',
         pass: process.env.emailPass
     }
+});
+router.get('/admin/users', function (req, res, next) {
+    var bUsers = [];
+    var nUsers = [];
+    var responseObject = {};
+
+    var getBetaUsers = function(callback) {
+        BetaUser.find().exec(function (err, betaUsers) {
+            if (err) {
+                return next(err);
+            }
+            callback(betaUsers);
+        })
+    };
+
+    var getUsers = function(betaUsers) {
+        BookdUser.find().exec(function (err, users) {
+            if (err) {
+                return next(err);
+            }
+            console.log(betaUsers);
+            responseObject.betaUsers = betaUsers;
+            responseObject.users = users;
+            res.json(responseObject);
+        })
+    };
+     getBetaUsers(getUsers);
 });
 
 /**
@@ -148,7 +177,8 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                         return next(err);
                     }
                     var id = user._id;
-                    request.post({url:'http://'+process.env.devhost +':3002/user/claimed-success?user='+id},function(err,response){});
+                    request.post({url: 'http://' + process.env.devhost + ':3002/user/claimed-success?user=' + id}, function (err, response) {
+                    });
                 });
             });
             stripe.accounts.create({
