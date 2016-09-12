@@ -32,13 +32,13 @@
                 <div class="col-xs-4">
                     <h3>Beta Signups</h3>
                     <div ng-repeat="user in users.betaUsers">
-                        ({{user.type}}) - {{user.email}}
+                        ({{user.type}}) - {{user.email}} - {{user.dateCreated}}
                     </div>
                 </div>
                 <div class="col-xs-8">
                     <h3>Current Users</h3>
                     <div ng-repeat="user in users.users">
-                        {{user.name}} - {{user.email}}
+                        {{user.name}} - {{user.email}} - {{user.dateCreated}}
                     </div>
                 </div>
             </div>
