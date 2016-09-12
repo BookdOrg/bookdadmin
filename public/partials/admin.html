@@ -9,11 +9,14 @@
             <div ng-repeat="request in pendingRequests">
                 <div class="row">
                     <div class="col-md-6">
-                        Business Name: {{request.name}}
-                        <br/>Address: {{request.address}}
-                        <br/>Phone Number: {{request.phoneNumber}}
-                        <br/>Date Created: {{request.dateCreated}}
-                        <br/>Owner: {{request.owner.name}}
+                        <p>Business Name: {{request.name}}</p>
+                        <p>Address: {{request.address}}</p>
+                        <p>Phone Number: {{request.phoneNumber}}</p>
+                        <p>Date Created: {{request.dateCreated}}</p>
+                        <p>Owner: {{request.owner.name}}</p>
+                        <p>Model: {{request.shopModel}}</p>
+                        <p>Size: {{request.shopSize}}</p>
+                        <p>Account Type {{request.accountType}}</p>
                     </div>
                     <div class="col-md-6">
                         <button class="btn btn-success" ng-show="!loading" ng-click="approveRequest(request)">Approve</button>
