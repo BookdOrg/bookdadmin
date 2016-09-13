@@ -21,7 +21,10 @@ var BookdSchema = new mongoose.Schema({
     associatePhotos: [],
     businesses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Business'}],
     personalAppointments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Appointment'}],
-    businessAppointments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Appointment'}]
+    businessAppointments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Appointment'}],
+    dateCreated:String,
+    stripeKeys:Object,
+    stripeId:String
 });
 
 module.exports = BookdSchema;

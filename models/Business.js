@@ -16,7 +16,12 @@ var BusinessSchema = new mongoose.Schema({
     pending: Boolean,
     claimed: Boolean,
     tier: Number,
+    payments:Boolean,
+    accountType: String,
+    shopModel: String,
+    shopSize: String,
     stripeId:String,
-    stripeKeys:Object
+    stripeKeys:Object,
+    stripeAccount:Object
 });
 module.exports = BusinessSchema;

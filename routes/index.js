@@ -60,7 +60,6 @@ router.get('/admin/users', function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            console.log(betaUsers);
             responseObject.betaUsers = betaUsers;
             responseObject.users = users;
             res.json(responseObject);
@@ -165,36 +164,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
         business.stripeKeys = {};
         business.payments = false;
         if (!business.pending && business.claimed) {
-            BookdUser.findOne(business.owner).exec(function (err, user) {
-                if (err) {
-                    return handleError(err);
-                }
-                user.businesses.push(business._id);
-                user.businessPage = business.placesId;
-                user.businessOwner = true;
-                user.save(function (err, user) {
-                    if (err) {
-                        return next(err);
-                    }
-                    var id = user._id;
-                    request.post({url: 'http://' + process.env.devhost + ':3002/user/claimed-success?user=' + id}, function (err, response) {
-                    });
-                });
-            });
-            stripe.accounts.create({
-                country: 'US',
-                managed: true,
-                business_name: business.name
-            }, function (err, response) {
-                business.stripeId = response.id;
-                business.stripeKeys = response.keys;
-                business.save(function (err, resBus) {
-                    if (err) {
-                        return next(err);
-                    }
-                    res.json({success: 'success'});
-                });
-            });
+            updateUser(business,updateBusiness);
         } else {
             business.save(function (err, business) {
                 if (err) {
@@ -204,6 +174,56 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             });
         }
     });
+    function updateUser(businessObj,callback) {
+        BookdUser.findOne(businessObj.owner).exec(function (err, user) {
+            if (err) {
+                return handleError(err);
+            }
+            user.businesses.push(businessObj._id);
+            user.businessPage = businessObj.placesId;
+            user.businessOwner = true;
+            if (businessObj.accountType == 'shopEmployee' || businessObj.accountType == 'individual' && typeof user.stripeId == "undefined") {
+                createAccount(user);
+            }
+            user.save(function (err, user) {
+                if (err) {
+                    return next(err);
+                }
+                var id = user._id;
+                request.post({url: 'http://' + process.env.devhost + ':3002/user/claimed-success?user=' + id}, function (err, response) {
+                });
+                callback(businessObj,done);
+            });
+        })
+    }
+    var updateBusiness = function(business,callback){
+        if(business.accountType == 'owner' || business.accountType == 'shopEmployee'){
+            createAccount(business);
+        }
+        business.save(function(err, updatedBusiness){
+            if(err){return next(err)}
+            callback();
+        });
+    };
+    function setAccountInfo(stripeData,object){
+        object.stripeId = stripeData.id;
+        object.stripeKeys = stripeData.keys;
+        object.save(function(err,object){
+            if(err){return next(err)};
+        })
+    }
+    function createAccount(businessObj){
+        stripe.accounts.create({
+            country: 'US',
+            managed: true,
+            business_name: businessObj.name+'_'+businessObj._id.toString()
+        }, function (err, response) {
+            setAccountInfo(response,businessObj);
+        });
+    }
+    function done(){
+        res.json('Done');
+    }
 });
 
 module.exports = router;
