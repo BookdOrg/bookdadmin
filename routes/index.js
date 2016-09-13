@@ -23,9 +23,9 @@ var BetaUser = bookdDatabase.model('betausers', BetaUserSchema);
 var Notification = bookdDatabase.model('Notifications',NotificationSchema);
 
 var request = require('request');
-
+console.log(process.env.devhost)
 var stripe = require('stripe')(process.env.stripeDevSecret);
-
+var io = require('socket.io-emitter')({host: process.env.devhost, port: 6379 });
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 var server = require('http').createServer(app);
 //var io = require('socket.io')(server);
@@ -192,8 +192,10 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                     return next(err);
                 }
                 var id = user._id;
-                request.post({url: 'http://' + process.env.devhost + ':3002/user/claimed-success?user=' + id}, function (err, response) {
-                });
+                user.hash = undefined;
+                //IO.TO doesn't work but hopefully we can make sockets interact cross app
+                io.to(user._id).emit('update-user', user);
+                request.post({url: 'http://' + process.env.devhost + ':3002/user/claimed-success?user=' + id}, function (err, response) {});
                 callback(businessObj,done);
             });
         })
@@ -207,7 +209,7 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
             console.log(updatedBusiness.owner);
             request.post({
                 url: 'http://' + process.env.devhost + ':3002/user/notifications/create',
-                form:{content:'Your request to claim' +updatedBusiness.name +' has been accepted! You can now navigate to the Manage section of BUZ to start operating your business.',
+                form:{content:'Your request to claim ' +updatedBusiness.name +' has been accepted! You can now navigate to the Manage section of BUZ to start operating your business.',
                     type:'false',
                     id:updatedBusiness.owner.toString()}
             }, function (err, response) {});
