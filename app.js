@@ -10,15 +10,18 @@ var mongoose = require('mongoose');
 
 var adminDatabase = require('./connectionOne');
 var bookdDatabase = require('./connectionTwo');
+
 var UserSchema = require('./models/User');
 var BookdSchema = require('./models/BookdUser');
 var BusinessSchema = require('./models/Business');
 var BetaUserSchema = require('./models/BetaUser');
+var NotificationSchema = require('./models/Notification');
 
 adminDatabase.model('Administrators',UserSchema);
 bookdDatabase.model('User',BookdSchema);
 bookdDatabase.model('Business',BusinessSchema);
 bookdDatabase.model('betausers',BetaUserSchema);
+bookdDatabase.model('Notifications',NotificationSchema);
 
 require('./config/passport');
 

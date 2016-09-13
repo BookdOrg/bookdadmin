@@ -14,11 +14,13 @@ var UserSchema = require('./../models/User');
 var BusinessSchema = require('./../models/Business');
 var BookdSchema = require('./../models/BookdUser');
 var BetaUserSchema = require('./../models/BetaUser');
+var NotificationSchema = require('./../models/Notification');
 
 var User = adminDatabase.model('Administrators', UserSchema);
 var BookdUser = bookdDatabase.model('User', BookdSchema);
 var Business = bookdDatabase.model('Business', BusinessSchema);
 var BetaUser = bookdDatabase.model('betausers', BetaUserSchema);
+var Notification = bookdDatabase.model('Notifications',NotificationSchema);
 
 var request = require('request');
 
@@ -202,6 +204,13 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
         }
         business.save(function(err, updatedBusiness){
             if(err){return next(err)}
+            console.log(updatedBusiness.owner);
+            request.post({
+                url: 'http://' + process.env.devhost + ':3002/user/notifications/create',
+                form:{content:'Your request to claim' +updatedBusiness.name +' has been accepted! You can now navigate to the Manage section of BUZ to start operating your business.',
+                    type:'false',
+                    id:updatedBusiness.owner.toString()}
+            }, function (err, response) {});
             callback();
         });
     };
@@ -225,5 +234,4 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
         res.json('Done');
     }
 });
-
 module.exports = router;
