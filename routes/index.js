@@ -37,7 +37,9 @@ if (process.env.NODE_ENV === 'development') {
     };
     server = require('https').createServer(options, app);
 }
-//var io = require('socket.io')(server);
+var io = require('socket.io')(server);
+var redis = require('socket.io-redis');
+io.adapter(redis({host: process.env.devhost, port: 6379}));
 var nodemailer = require('nodemailer');
 var EmailTemplate = require('email-templates').EmailTemplate;
 var path = require('path');
