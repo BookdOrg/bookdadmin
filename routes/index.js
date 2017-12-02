@@ -23,7 +23,6 @@ var BetaUser = bookdDatabase.model('betausers', BetaUserSchema);
 var Notification = bookdDatabase.model('Notifications',NotificationSchema);
 
 var request = require('request');
-console.log(process.env.devhost)
 var stripe = require('stripe')(process.env.stripeDevSecret);
 // var io = require('socket.io-emitter')({host: "localhost", port: 6379 });
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
