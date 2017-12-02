@@ -10,6 +10,7 @@
     "angular": "^1.4.8",
     "angular-ui-router": "^0.2.15",
     "async": "1.5.*",
+    "bcrypt": "^1.0.3",
     "body-parser": "~1.14.2",
     "bootstrap": "^3.3.6",
     "bower": "^1.7.1",
