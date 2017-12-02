@@ -26,7 +26,17 @@ var request = require('request');
 var stripe = require('stripe')(process.env.stripeDevSecret);
 // var io = require('socket.io-emitter')({host: "localhost", port: 6379 });
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
-var server = require('http').createServer(app);
+
+if (process.env.NODE_ENV === 'development') {
+    server = require('http').createServer(app);
+} else {
+    var fs = require('fs');
+    var options = {
+        key: fs.readFileSync(process.env.keyLoc),
+        cert: fs.readFileSync(process.env.certLoc)
+    };
+    server = require('https').createServer(options, app);
+}
 //var io = require('socket.io')(server);
 var nodemailer = require('nodemailer');
 var EmailTemplate = require('email-templates').EmailTemplate;
