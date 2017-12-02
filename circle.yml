@@ -1,0 +1,21 @@
+deployment:
+  production:
+    branch: master
+    commands:
+      - rsync -az ../bookdadmin/ khalil@bookd.me.me:/home/khalil/bookdadmin
+  staging:
+    branch: development
+    commands:
+      - rsync -az ../bookdadmin/ khalil@bookd.me:/home/khalil/bookdamin
+
+machine:
+  node:
+    version: 6.5.0
+
+dependencies:
+  cache_directories:
+    - "bower_components"
+
+test:
+  override:
+    - echo "test"
