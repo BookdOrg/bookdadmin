@@ -205,19 +205,18 @@ router.post('/admin/business/update-request', auth, function (req, res, next) {
                 var id = user._id;
                 user.hash = undefined;
                 //IO.TO doesn't work but hopefully we can make sockets interact cross app
-                io.to(user._id).emit('update-user', user);
+                // io.to(user._id).emit('update-user', user);
                 request.post({url: 'http://' + process.env.devhost + ':3002/user/claimed-success?user=' + id}, function (err, response) {});
                 callback(businessObj,done);
             });
         })
     }
     var updateBusiness = function(business,callback){
-        if(business.accountType == 'owner' || business.accountType == 'shopEmployee'){
+        if (business.accountType === 'owner' || business.accountType === 'shopEmployee') {
             createAccount(business);
         }
         business.save(function(err, updatedBusiness){
             if(err){return next(err)}
-            console.log(updatedBusiness.owner);
             request.post({
                 url: 'http://' + process.env.devhost + ':3002/user/notifications/create',
                 form:{content:'Your request to claim ' +updatedBusiness.name +' has been accepted! You can now navigate to the Manage section of BUZ to start operating your business.',
